@@ -7,6 +7,19 @@ var Promise = require('promise');
 
 // var benJid = '_u2012@livefyre.com';
 var benJid = 'system@demo.fyre.co';
+var mockSubscriptionsClient = {
+  getForUser: function (opts) {
+    return Promise.resolve({
+        "subscriptions": [
+          {
+            "by": "urn:livefyre:example.fyre.co:user=default",
+            "type": "personalStream",
+            "to": "urn:livefyre:example.fyre.co:site=23456:topic=123"
+          }
+        ]
+    });
+  }
+}
 
 // livefyre-subscriptions
 describe('.URN', function () {
@@ -26,19 +39,7 @@ describe('.forUser', function () {
   beforeEach(function () {
     benSubscriptions = subscriptions.forUser(benJid)
     // mock the client
-    extend(benSubscriptions.client, {
-      getForUser: function (opts) {
-        return Promise.resolve({
-            "subscriptions": [
-              {
-                "by": "urn:livefyre:example.fyre.co:user=default",
-                "type": "personalStream",
-                "to": "urn:livefyre:example.fyre.co:site=23456:topic=123"
-              }
-            ]
-        });
-      }
-    });
+    extend(benSubscriptions.client, mockSubscriptionsClient);
   });
   it('gets by jid', function() {
     assert.typeOf(benSubscriptions, 'object');
@@ -52,6 +53,9 @@ describe('.forUser', function () {
     assert.typeOf(subs.get, 'function');
   })
 
+  /**
+   * Get Subscriptions for a User
+   */
   describe('.get', function (){
     this.timeout(10000);
     it('gets a promise', function (done) {
@@ -65,6 +69,24 @@ describe('.forUser', function () {
         assert.ok(data.subscriptions.length > 0, 'there are subscriptions');
       })
       .then(yay(done), done);
+    });
+  })
+
+  /**
+   * Add a Subscription for a User
+   */
+  describe('.create', function () {
+    it('gets a promise', function (done) {
+      this.timeout(10000)
+      var createSub = benSubscriptions.create({
+        to: 'urn:livefyre:demo.fyre.co:site=362588:topic=mlb',
+        type: 'personalStream'
+      });
+      createSub
+        .then(function (resObj) {
+          assert.ok(resObj, 'gets a subscribe response data object');
+        })
+        .then(yay(done), done);
     });
   })
 })

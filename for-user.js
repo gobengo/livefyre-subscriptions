@@ -18,11 +18,21 @@ function SubscriptionsForUser(user) {
 extend(SubscriptionsForUser.prototype, {
     client: subscriptionsClient,
     /**
-     * return a promise for the user's subscriptions
+     * promise to get the user's subscriptions
      */
     get: function getUserSubscriptions() {
         var user = this._user;
         return this.client.getForUser(user);
+    },
+    /**
+     * promise to create a subscription
+     */
+    create: function createSubscription(subscription) {
+        var user = this._user;
+        return this.client.createForUser(user, subscription)
+            .then(function (resObj) {
+                return resObj.data
+            });
     }
 });
 
