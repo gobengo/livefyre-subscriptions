@@ -20,8 +20,18 @@ if ( ! options.auth) {
 var subscriptions = require('./index');
 var userSubscriptions = subscriptions.forUser(options.auth);
 
-userSubscriptions.get().then(function (data) {
-    var subscriptions = data.subscriptions;
-    console.log(JSON.stringify(subscriptions, null, '  '));
-    process.exit(0);
-});
+userSubscriptions.get().then(
+    function (data) {
+        var subscriptions = data.subscriptions;
+        if (subscriptions) {
+            console.log(JSON.stringify(subscriptions, null, '  '));            
+        } else {
+            console.log("There are no subscriptions");
+        }
+        process.exit(0);
+    },
+    function (err) {
+        console.error('Error getting subscriptions', err.stack);
+        process.exit(1);
+    }
+);
