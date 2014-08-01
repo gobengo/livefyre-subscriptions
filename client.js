@@ -6,7 +6,7 @@ var xtend = require('xtend');
 var url = require('url');
 
 // require('debug').enable('livefyre-subscriptions/client')
-var log = require('debug')('livefyre-subscriptions/client')
+var log = require('debug')('livefyre-subscriptions/client');
 
 exports.token = process.env.LFTOKEN || 'SET LFTOKEN';
 
@@ -27,6 +27,9 @@ exports.getForUser = function (user) {
                 throw new Error('HTTP '+res.statusCode+' Error when getting subscriptions for '+JSON.stringify(opts));
             }
             return parseResponse(res);
+        })
+        .then(function (resObj) {
+            return resObj.data;
         });
 };
 
@@ -53,7 +56,7 @@ exports.createForUser = function (user, subscription) {
                 throw new Error('HTTP '+res.statusCode+' Error when creating subscription: '+JSON.stringify(resText));
             }
             return resText;
-        })
+        });
     });
 };
 
@@ -73,19 +76,20 @@ function getResponse(opts) {
 }
 
 function parseResponse(res) {
-    var resText = ''
+    var resText = '';
     res.on('data', function (d) {
         resText += d;
     });
     return new Promise(function (resolve, reject) {
         res.on('end', function () {
+            var resObject;
             try {
-                var resObject = JSON.parse(resText);                
+                resObject = JSON.parse(resText);
             } catch (e) {
                 reject(e);
             }
             resolve(resObject);
-        })
+        });
     });
 }
 

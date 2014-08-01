@@ -2,9 +2,34 @@
 
 A JavaScript library for [managing Subscriptions](http://docs.livefyre.com/beta-docs/personalizedstream/personalized-streams/subscription-apis/) in Livefyre's Personalized News Stream service.
 
-## Using
+## Usage
 
 This module is intended to work in both node.js and the browser (via browserify). Run `make dist` to put the browser bundle in dist/.
+
+Use as a CLI (e.g. if you `npm install -g livefyre-subscriptions`):
+
+### CLI
+
+```sh
+livefyre-subscriptions --auth=$LFTOKEN
+```
+
+    [
+      {
+        "to": "urn:livefyre:demo.fyre.co:site=362588:topic=mlb",
+        "type": "personalStream",
+        "by": "urn:livefyre:demo.fyre.co:user=system",
+        "createdAt": 1406886370
+      }
+    ]
+
+You can even pipe to something like [jq](http://stedolan.github.io/jq/):
+
+```sh
+livefyre-subscriptions --auth=$LFTOKEN | jq .[]
+```
+
+### JavaScript
 
 ```javascript
 var subscriptions = require('livefyre-subscriptions');

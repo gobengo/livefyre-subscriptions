@@ -4,6 +4,7 @@ var URN = require('./urn');
 var subscriptionsClient = require('./client');
 var extend = require('util-extend');
 var Promise = require('promise');
+var base64url = require('base64url');
 
 function SubscriptionsForUser(user) {
     if ( ! (this instanceof SubscriptionsForUser)) {
@@ -40,10 +41,27 @@ function userFromString(userString) {
     try {
         return URN.forUser.parse(userString);
     } catch (e) {
-        var userParts = userString.split('@');
-        return {
-            userId: userParts[0],
-            network: userParts[1]
-        }
     }
+    try {
+        return userFromToken(userString);
+    } catch (e) {
+    };
+    var userParts = userString.split('@');
+    return {
+        userId: userParts[0],
+        network: userParts[1]
+    }
+}
+
+function userFromToken(token) {
+    var tokenParts = token.split('.');
+    if (tokenParts.length !== 3) {
+        throw new Error('Invalid lftoken: '+token);
+    }
+    var tokenJson = base64url.decode(tokenParts[1]);
+    var tokenData = JSON.parse(tokenJson);
+    return {
+        network: tokenData.domain,
+        userId: tokenData.user_id
+    };
 }
