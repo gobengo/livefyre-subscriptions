@@ -24,7 +24,7 @@ exports.getForUser = function (user) {
     return getResponse(userSubscriptionsRequest(user))
         .then(function (res) {
             if (res.statusCode !== 200) {
-                throw new Error('HTTP '+res.statusCode+' Error when getting subscriptions for '+JSON.stringify(opts));
+                throw new Error('HTTP '+res.statusCode+' Error when getting subscriptions for '+JSON.stringify(user));
             }
             return parseResponse(res);
         })
