@@ -62,6 +62,7 @@ function userFromToken(token) {
     var tokenData = JSON.parse(tokenJson);
     return {
         network: tokenData.domain,
-        userId: tokenData.user_id
+        userId: tokenData.user_id,
+        lftoken: token
     };
 }
