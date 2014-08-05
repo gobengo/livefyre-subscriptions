@@ -1,0 +1,30 @@
+<!doctype html>
+
+<button id="auth-button">Log in</button>
+
+<!-- Livefyre.js is our script loader for everything else -->
+<script src="https://cdn.livefyre.com/Livefyre.js"></script>
+
+<!-- Add LFEP to the page for demo.fyre.co network -->
+<script src="https://demo.ep.livefyre.com/media/ZGVtby5lcC5saXZlZnlyZS5jb20=/javascripts/customprofiles.js"></script>
+
+<script>
+Livefyre.require(['auth', 'lfep-auth-delegate#0', 'auth-contrib#0.0.0'], function(auth, LFEPDelegate, authContrib) {
+    // Wire up LFEP to AppKit Auth
+    auth.delegate(new LFEPDelegate({
+        engageOpts: {
+            app: 'livefyre-dev'
+        }
+    }));
+    authContrib.createButton(auth, document.getElementById('auth-button'));
+});
+</script>
+
+<script src="../dist/livefyre-subscriptions.js"></script>
+<script>
+(function () {
+var subscriptions = Livefyre['livefyre-subscriptions'];
+debugger;
+subscriptions.forUser()
+}());
+</script>

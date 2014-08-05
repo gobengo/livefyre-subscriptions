@@ -4,9 +4,18 @@ all: build
 
 build: node_modules
 
-dist: build
+dist: dist/livefyre-subscriptions.js dist/livefyre-subscriptions.min.js
+
+# dev JS
+dist/livefyre-subscriptions.js: build
 	mkdir -p dist
-	./node_modules/.bin/browserify index.js -s livefyre-subscriptions -o dist/livefyre-subscriptions.js
+	cat config/wrap-start.frag > dist/livefyre-subscriptions.js
+	./node_modules/.bin/browserify index.js -r ./index.js:livefyre-subscriptions >> dist/livefyre-subscriptions.js
+	cat config/wrap-end.frag >> dist/livefyre-subscriptions.js  
+
+# uglified JS
+dist/livefyre-subscriptions.min.js: dist/livefyre-subscriptions.js
+	cat dist/livefyre-subscriptions.js | ./node_modules/.bin/uglifyjs > dist/livefyre-subscriptions.min.js
 
 # if package.json changes, install
 node_modules: package.json
